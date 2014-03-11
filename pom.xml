@@ -4,8 +4,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.sky.mathout</groupId>
 	<version>0.0.1-SNAPSHOT</version>
-	<artifactId>mathout-java</artifactId>
-	<name>mathout-java</name>
+	<artifactId>mahout-java</artifactId>
+	<name>mahout-java</name>
 	<packaging>jar</packaging>
 	<properties>
 		<java-version>1.5</java-version>
