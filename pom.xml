@@ -16,7 +16,23 @@
 	</properties>
 
 	<dependencies>
-			<!-- Testing -->
+	<!-- Logging -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${org.slf4j-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>${org.slf4j-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${org.slf4j-version}</version>
+		</dependency>
+		<!-- Testing -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -63,14 +79,24 @@
 		</dependency>
 		<!-- Appache Mahout -->
 		<dependency>
-		    <groupId>org.apache.mahout</groupId>
-		    <artifactId>mahout-core</artifactId>
-		    <version>${mahout.version}</version>
+			<groupId>org.apache.mahout</groupId>
+			<artifactId>mahout-core</artifactId>
+			<version>${mahout.version}</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.apache.mahout</groupId>
-		    <artifactId>mahout-math</artifactId>
-		    <version>${mahout.version}</version>
+			<groupId>org.apache.mahout</groupId>
+			<artifactId>mahout-math</artifactId>
+			<version>${mahout.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.mahout</groupId>
+			<artifactId>mahout-examples</artifactId>
+			<version>${mahout.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.healthmarketscience.jackcess</groupId>
+			<artifactId>jackcess</artifactId>
+			<version>2.0.3</version>
 		</dependency>
 
 	</dependencies>
