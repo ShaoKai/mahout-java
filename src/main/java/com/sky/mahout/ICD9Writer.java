@@ -4,10 +4,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
@@ -22,14 +22,14 @@ public class ICD9Writer {
 
 	private static final Logger logger = LoggerFactory.getLogger(ICD9Writer.class);
 
-	public static Map<String, Set<String>> getAdmissionData(Map<String, Set<String>> dataMap, String year) {
+	public static Map<String, Set<String>> getAdmissionData(Map<String, Set<String>> dataMap, String mdbPath, String year) {
 		if (dataMap == null) {
 			dataMap = new HashMap<String, Set<String>>();
 		}
 
 		Table table = null;
 		try {
-			table = DatabaseBuilder.open(new File(AppConfig.MDB_FILE_PATH)).getTable("R201_DD" + year);
+			table = DatabaseBuilder.open(new File(mdbPath)).getTable("R201_DD" + year);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -43,7 +43,7 @@ public class ICD9Writer {
 
 			Set<String> bucket = null;
 			if (!dataMap.containsKey(ID)) {
-				bucket = new HashSet<String>();
+				bucket = new TreeSet<String>();
 				dataMap.put(ID, bucket);
 				insertCount++;
 			} else {
@@ -63,14 +63,14 @@ public class ICD9Writer {
 		return dataMap;
 	}
 
-	public static Map<String, Set<String>> getOutPatientClinicData(Map<String, Set<String>> dataMap, String year) {
+	public static Map<String, Set<String>> getOutPatientClinicData(Map<String, Set<String>> dataMap, String mdbPath, String year) {
 		if (dataMap == null) {
 			dataMap = new HashMap<String, Set<String>>();
 		}
 
 		Table table = null;
 		try {
-			table = DatabaseBuilder.open(new File(AppConfig.MDB_FILE_PATH)).getTable("R201_CD" + year);
+			table = DatabaseBuilder.open(new File(mdbPath)).getTable("R201_CD" + year);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -84,7 +84,7 @@ public class ICD9Writer {
 
 			Set<String> bucket = null;
 			if (!dataMap.containsKey(ID)) {
-				bucket = new HashSet<String>();
+				bucket = new TreeSet<String>();
 				dataMap.put(ID, bucket);
 				insertCount++;
 			} else {
@@ -110,25 +110,35 @@ public class ICD9Writer {
 		HashMap<String, Set<String>> dataMap = new HashMap<String, Set<String>>();
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
-		getAdmissionData(dataMap, "2005");
-		logger.info("2005 A, data size : {} - {}", dataMap.size(), stopWatch);
-		getOutPatientClinicData(dataMap, "2005");
-		logger.info("2005 P, data size : {} - {}", dataMap.size(), stopWatch);
-		getAdmissionData(dataMap, "2006");
-		logger.info("2006 A, data size : {} - {}", dataMap.size(), stopWatch);
-		getOutPatientClinicData(dataMap, "2006");
-		logger.info("2006 P, data size : {} - {}", dataMap.size(), stopWatch);
+		getAdmissionData(dataMap, AppConfig.MDB1_FILE_PATH, "2005");
+		getOutPatientClinicData(dataMap, AppConfig.MDB1_FILE_PATH, "2005");
+		getAdmissionData(dataMap, AppConfig.MDB1_FILE_PATH, "2006");
+		getOutPatientClinicData(dataMap, AppConfig.MDB1_FILE_PATH, "2006");
 		stopWatch.stop();
-		logger.info("{}", stopWatch);
+		logger.info("2005 ~ 2006 , data size : {} - {}", dataMap.size(), stopWatch);
+		stopWatch.reset();
+		stopWatch.start();
+		getOutPatientClinicData(dataMap, AppConfig.MDB2_FILE_PATH, "2000");
+		getOutPatientClinicData(dataMap, AppConfig.MDB2_FILE_PATH, "2001");
+		getOutPatientClinicData(dataMap, AppConfig.MDB2_FILE_PATH, "2002");
+		getOutPatientClinicData(dataMap, AppConfig.MDB2_FILE_PATH, "2003");
+		getOutPatientClinicData(dataMap, AppConfig.MDB2_FILE_PATH, "2004");
+		getOutPatientClinicData(dataMap, AppConfig.MDB2_FILE_PATH, "2007");
+		getOutPatientClinicData(dataMap, AppConfig.MDB2_FILE_PATH, "2008");
+		getOutPatientClinicData(dataMap, AppConfig.MDB2_FILE_PATH, "2009");
+		stopWatch.stop();
+		logger.info("2000 ~ 2004 , data size : {} - {}", dataMap.size(), stopWatch);
 		stopWatch.reset();
 		stopWatch.start();
 		FileWriter datWriter = new FileWriter(AppConfig.INPUT_FILE_PATH);
 		int transactionCount = 0;
 		for (Iterator<Set<String>> itr = dataMap.values().iterator(); itr.hasNext();) {
 			Set<String> itemSet = itr.next();
-			datWriter.append(StringUtils.join(itemSet.toArray(new String[itemSet.size()]), ","));
-			datWriter.append("\n");
-			transactionCount++;
+			if (itemSet.size() > 1) {
+				datWriter.append(StringUtils.join(itemSet.toArray(new String[itemSet.size()]), ","));
+				datWriter.append("\n");
+				transactionCount++;
+			}
 		}
 		datWriter.close();
 		stopWatch.stop();

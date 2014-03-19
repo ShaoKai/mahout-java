@@ -25,11 +25,11 @@ public class App {
 		FPGrowth<String> fp = new FPGrowth<String>();
 		Set<String> features = new HashSet<String>();
 
-		String pattern = " \"[ ,\\t]*[,|\\t][ ,\\t]*\" ";
+		String pattern = "[,]";
 		FileLineIterable fileLineIterable = new FileLineIterable(new File(AppConfig.INPUT_FILE_PATH));
 		StringRecordIterator stringRecordIterator = new StringRecordIterator((fileLineIterable), pattern);
 
-		long minSupport = 10;
+		long minSupport = 5;
 		int maxHeapSize = 100;
 		// @formatter:off
 		fp.generateTopKFrequentPatterns(
@@ -44,6 +44,7 @@ public class App {
 		stopWatch.stop();
 		logger.info("{}", stopWatch);
 		logger.info("{}", features.toString());
-	}
 
+//		PrintStreamConverter.print();
+	}
 }
